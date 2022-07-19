@@ -55,13 +55,42 @@ class DomModel(QAbstractItemModel):
         return QVariant()
 
     def index(self, row: int, column: int, parent: QModelIndex = ...) -> QModelIndex:
-        return super().index(row, column, parent)
+        if not self.hasIndex(row, column, parent):
+            return QModelIndex()
+
+        if not parent.isValid():
+            parent_item: DomItem = self.__root_item
+        else:
+            parent_item: DomItem = parent.internalPointer()
+
+        child_item: DomItem = parent_item.child(row)
+        if child_item:
+            return self.createIndex(row, column, child_item)
+
+        return QModelIndex()
 
     def parent(self, child: QModelIndex) -> QModelIndex:
-        return super().parent(child)
+        if not child.isValid():
+            return QModelIndex()
+
+        child_item: DomItem = child.internalPointer()
+        parent_item: DomItem = child_item.parent
+
+        if not parent_item or parent_item == self.__root_item:
+            return QModelIndex()
+
+        return self.createIndex(parent_item.row, 0, parent_item)
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
-        return super().rowCount(parent)
+        if parent.column() > 0:
+            return 0
+
+        if not parent.isValid():
+            parent_item: DomItem = self.__root_item
+        else:
+            parent_item: DomItem = parent.internalPointer()
+
+        return parent_item.node.childNodes().count()
 
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
-        return super().columnCount(parent)
+        return 3
