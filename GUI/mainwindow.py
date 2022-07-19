@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSlot, QFile, QIODevice
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QWidget, QMenu, QTreeView, QMainWindow, QFileDialog, QAction
+from PyQt5.QtWidgets import QWidget, QMenu, QTreeView, QMainWindow, QFileDialog, QAction, QHeaderView
 from PyQt5.QtXml import QDomDocument
 
 from Models.dom_model import DomModel
@@ -28,6 +28,8 @@ class MainWindow(QMainWindow):
         self.__file_menu.addAction(exit_action)
 
         self.__view.setModel(self.__model)
+
+        self.__view.header().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         self.setCentralWidget(self.__view)
         self.setWindowTitle('Simple DOM Model')
