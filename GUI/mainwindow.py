@@ -41,13 +41,13 @@ class MainWindow(QMainWindow):
                                                                       'SVG files (*.svg);;User Interface files (*.ui)')
 
         if file_path != '':
-            file: QFile = QFile(file_path[0])
-            if file.open(QIODevice.ReadOnly):
+            xml_file: QFile = QFile(file_path[0])
+            if xml_file.open(QIODevice.ReadOnly):
                 document: QDomDocument = QDomDocument()
-                if document.setContent(file):
+                if document.setContent(xml_file):
                     new_model: DomModel = DomModel(document, self)
                     self.__view.setModel(new_model)
                     del self.__model
                     self.__xml_path = file_path[0]
 
-            file.close()
+            xml_file.close()
